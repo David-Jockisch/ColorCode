@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Colorful Circles</title>
+  <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-database.js"></script>
   <style>
     body {
       background-color: black;
@@ -57,6 +59,22 @@
     var colors = ['white', 'green', 'yellow', 'red'];
     var colorIndices = { 'circle1': 0, 'circle2': 0, 'circle3': 0 };
 
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyAMJi1Js9pQr_a97hlUEZ-P2FHpml1Pj60",
+      authDomain: "jockschkids.firebaseapp.com",
+      databaseURL: "https://jockschkids-default-rtdb.firebaseio.com",
+      projectId: "jockschkids",
+      storageBucket: "jockschkids.appspot.com",
+      messagingSenderId: "179744942854",
+      appId: "1:179744942854:web:8747c02b20eea0ad76cc87",
+      measurementId: "G-GVLJ4E74TQ"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
+
     function changeColor(circleId) {
       var circle = document.getElementById(circleId);
 
@@ -65,6 +83,28 @@
 
       // Set the color for the current circle
       circle.style.backgroundColor = colors[colorIndices[circleId]];
+
+      // Save the updated color index to Firebase
+      saveColorToFirebase(circleId, colorIndices[circleId]);
+    }
+
+    function saveColorToFirebase(circleId, colorIndex) {
+      // Update the color index for the current circle in Firebase
+      database.ref(circleId).set({
+        colorIndex: colorIndex
+      });
+    }
+
+    // Load initial colors from Firebase
+    for (var key in colorIndices) {
+      var colorRef = database.ref(key);
+      colorRef.once('value', function(snapshot) {
+        var data = snapshot.val();
+        if (data && data.colorIndex !== undefined) {
+          colorIndices[key] = data.colorIndex;
+          document.getElementById(key).style.backgroundColor = colors[data.colorIndex];
+        }
+      });
     }
   </script>
 
