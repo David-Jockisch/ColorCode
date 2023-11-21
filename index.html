@@ -100,22 +100,45 @@
       });
     }
 
+    // Function to load initial colors from Firebase
+    function loadInitialColors() {
+      var promises = [];
+      for (var key in colorIndices) {
+        promises.push(loadColorFromFirebase(key));
+      }
+      return Promise.all(promises);
+    }
+
+    // Function to load color from Firebase for a specific circle
+    function loadColorFromFirebase(circleId) {
+      return new Promise(function(resolve, reject) {
+        var colorRef = database.ref(circleId);
+        colorRef.once('value', function (snapshot) {
+          var data = snapshot.val();
+          if (data && data.colorIndex !== undefined) {
+            colorIndices[circleId] = data.colorIndex;
+            document.getElementById(circleId).style.backgroundColor = colors[data.colorIndex];
+            resolve();
+          } else {
+            reject();
+          }
+        });
+      });
+    }
+
     // Check the authentication state
     auth.onAuthStateChanged(function (user) {
       if (user) {
         // User is signed in, proceed with accessing the database
 
         // Load initial colors from Firebase
-        for (var key in colorIndices) {
-          var colorRef = database.ref(key);
-          colorRef.once('value', function (snapshot) {
-            var data = snapshot.val();
-            if (data && data.colorIndex !== undefined) {
-              colorIndices[key] = data.colorIndex;
-              document.getElementById(key).style.backgroundColor = colors[data.colorIndex];
-            }
+        loadInitialColors()
+          .then(function() {
+            console.log("Initial colors loaded successfully");
+          })
+          .catch(function() {
+            console.error("Failed to load initial colors");
           });
-        }
 
         console.log("User signed in:", user);
       } else {
