@@ -6,7 +6,8 @@
   <title>Colorful Circles</title>
   <style>
     body {
-      background-color: transparent;
+      background-color: black;
+      color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -26,7 +27,7 @@
       border-radius: 50%;
       margin: 10px;
       cursor: pointer;
-      border: 2px solid black;
+      border: 2px solid white;
     }
 
     .circle-text {
@@ -56,14 +57,6 @@
     var colors = ['white', 'green', 'yellow', 'red'];
     var colorIndices = { 'circle1': 0, 'circle2': 0, 'circle3': 0 };
 
-    // Initialize colors based on saved indices
-    for (var key in colorIndices) {
-      if (localStorage.getItem(key)) {
-        colorIndices[key] = parseInt(localStorage.getItem(key));
-        document.getElementById(key).style.backgroundColor = colors[colorIndices[key]];
-      }
-    }
-
     function changeColor(circleId) {
       var circle = document.getElementById(circleId);
 
@@ -72,11 +65,9 @@
 
       // Set the color for the current circle
       circle.style.backgroundColor = colors[colorIndices[circleId]];
-
-      // Save the updated color index to localStorage
-      localStorage.setItem(circleId, colorIndices[circleId]);
     }
   </script>
 
 </body>
 </html>
+
