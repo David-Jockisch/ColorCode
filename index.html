@@ -81,44 +81,46 @@
     auth.onAuthStateChanged(function(user) {
       if (user) {
         // User is signed in, proceed with accessing the database
+
+        function changeColor(circleId) {
+          var circle = document.getElementById(circleId);
+
+          // Increment the color index for the current circle and reset if it exceeds the array length
+          colorIndices[circleId] = (colorIndices[circleId] + 1) % colors.length;
+
+          // Set the color for the current circle
+          circle.style.backgroundColor = colors[colorIndices[circleId]];
+
+          // Save the updated color index to Firebase
+          saveColorToFirebase(circleId, colorIndices[circleId]);
+        }
+
+        function saveColorToFirebase(circleId, colorIndex) {
+          // Update the color index for the current circle in Firebase
+          database.ref(circleId).set({
+            colorIndex: colorIndex
+          });
+        }
+
+        // Load initial colors from Firebase
+        for (var key in colorIndices) {
+          var colorRef = database.ref(key);
+          colorRef.once('value', function(snapshot) {
+            var data = snapshot.val();
+            if (data && data.colorIndex !== undefined) {
+              colorIndices[key] = data.colorIndex;
+              document.getElementById(key).style.backgroundColor = colors[data.colorIndex];
+            }
+          });
+        }
+
         console.log("User signed in:", user);
       } else {
         // User is signed out, you might want to redirect to a login page
         console.log("User signed out");
+        window.location.href = "login.html"; // Redirect to the login page if not signed in
       }
     });
-
-    function changeColor(circleId) {
-      var circle = document.getElementById(circleId);
-
-      // Increment the color index for the current circle and reset if it exceeds the array length
-      colorIndices[circleId] = (colorIndices[circleId] + 1) % colors.length;
-
-      // Set the color for the current circle
-      circle.style.backgroundColor = colors[colorIndices[circleId]];
-
-      // Save the updated color index to Firebase
-      saveColorToFirebase(circleId, colorIndices[circleId]);
-    }
-
-    function saveColorToFirebase(circleId, colorIndex) {
-      // Update the color index for the current circle in Firebase
-      database.ref(circleId).set({
-        colorIndex: colorIndex
-      });
-    }
-
-    // Load initial colors from Firebase
-    for (var key in colorIndices) {
-      var colorRef = database.ref(key);
-      colorRef.once('value', function(snapshot) {
-        var data = snapshot.val();
-        if (data && data.colorIndex !== undefined) {
-          colorIndices[key] = data.colorIndex;
-          document.getElementById(key).style.backgroundColor = colors[data.colorIndex];
-        }
-      });
-    }
   </script>
 
 </body>
