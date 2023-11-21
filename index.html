@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colorful Circles</title>
+  <style>
+    body {
+      background-color: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .circle-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 10px;
+      cursor: pointer;
+      border: 2px solid black;
+    }
+
+    .circle-text {
+      margin-top: 5px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="circle-container">
+    <div class="circle" id="circle1" onclick="changeColor('circle1')"></div>
+    <div class="circle-text">Dallas School</div>
+  </div>
+
+  <div class="circle-container">
+    <div class="circle" id="circle2" onclick="changeColor('circle2')"></div>
+    <div class="circle-text">Dallas Home</div>
+  </div>
+
+  <div class="circle-container">
+    <div class="circle" id="circle3" onclick="changeColor('circle3')"></div>
+    <div class="circle-text">Haylee Home</div>
+  </div>
+
+  <script>
+    var colors = ['white', 'green', 'yellow', 'red'];
+    var colorIndices = { 'circle1': 0, 'circle2': 0, 'circle3': 0 };
+
+    // Initialize colors based on saved indices
+    for (var key in colorIndices) {
+      if (localStorage.getItem(key)) {
+        colorIndices[key] = parseInt(localStorage.getItem(key));
+        document.getElementById(key).style.backgroundColor = colors[colorIndices[key]];
+      }
+    }
+
+    function changeColor(circleId) {
+      var circle = document.getElementById(circleId);
+
+      // Increment the color index for the current circle and reset if it exceeds the array length
+      colorIndices[circleId] = (colorIndices[circleId] + 1) % colors.length;
+
+      // Set the color for the current circle
+      circle.style.backgroundColor = colors[colorIndices[circleId]];
+
+      // Save the updated color index to localStorage
+      localStorage.setItem(circleId, colorIndices[circleId]);
+    }
+  </script>
+
+</body>
+</html>
