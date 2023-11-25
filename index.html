@@ -6,7 +6,6 @@
   <title>Colorful Circles</title>
   <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-auth-compat.js"></script>
   <style>
     body {
       background-color: black;
@@ -125,28 +124,6 @@
         });
       });
     }
-
-    // Check the authentication state
-    auth.onAuthStateChanged(function (user) {
-      if (user) {
-        // User is signed in, proceed with accessing the database
-
-        // Load initial colors from Firebase
-        loadInitialColors()
-          .then(function() {
-            console.log("Initial colors loaded successfully");
-          })
-          .catch(function() {
-            console.error("Failed to load initial colors");
-          });
-
-        console.log("User signed in:", user);
-      } else {
-        // User is signed out, redirect to the login page
-        console.log("User signed out");
-        window.location.href = "login.html"; // Redirect to the login page if not signed in
-      }
-    });
   </script>
 
 </body>
